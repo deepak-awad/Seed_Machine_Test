@@ -1,0 +1,26 @@
+package com.example.demo.Controller;
+import com.example.demo.Dao.Product;
+import com.example.demo.Service.productService;
+
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("api/products")
+public class productController {
+	
+	private productService productService;
+	
+	
+	public Product createProduct(@RequestBody Product Product)
+	{
+		return productService.createProduct(Product);
+		
+	}
+	
+	
+	
+	
+
+}

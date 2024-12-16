@@ -1,0 +1,20 @@
+package com.example.demo.Repository;
+
+import java.util.List;
+
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
+
+import com.example.demo.Dao.Category;
+
+public interface categoryRepository extends JpaRepository<Category, Long> {
+	
+	@Query(value = "SELECT * FROM ( " +
+            "SELECT c1_0.category_id, c1_0.category_name, " +
+            "ROW_NUMBER() OVER (ORDER BY c1_0.category_id) AS row_num " +
+            "FROM category c1_0) " +
+            "WHERE row_num BETWEEN :startRow AND :endRow")
+    List<Category> findCategoriesWithPagination(@Param("startRow") int startRow, @Param("endRow") int endRow);
+
+}

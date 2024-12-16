@@ -1,0 +1,46 @@
+package com.example.demo.Service;
+
+import com.example.demo.Repository.categoryRepository;
+import com.example.demo.Dao.Category;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+@Service
+public class categoryService {
+
+    @Autowired
+    private categoryRepository categoryRepository;
+
+    // Save category details
+    public Category createCategory(Category Category) {
+        return categoryRepository.save(Category);
+    }
+
+    // Get category by id
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category Not Found"));
+    }
+
+    // Delete category by id
+    public void deleteCategoryById(Long id) {
+        categoryRepository.deleteById(id);
+    }
+
+    // Update category by id
+    public Category updateCategoryById(Long id, Category Category) {
+        Category c = getCategoryById(id);
+        c.setCategoryName(Category.getCategoryName());
+        return categoryRepository.save(c);
+    }
+
+    // Get paginated categories with sorting
+    public Page<Category> getAllCategories(int pageNo, int pageSize, String sortByColumn, Sort.Direction sortDirection) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sortDirection, sortByColumn);
+        return categoryRepository.findAll(pageable);
+    }
+}

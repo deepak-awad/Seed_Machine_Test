@@ -1,0 +1,65 @@
+package com.example.demo.Dao;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import jakarta.persistence.*;
+
+@Entity
+public class Product {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long productId;
+
+    private String productName;
+    private double productPrice;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @JsonInclude(JsonInclude.Include.NON_NULL)  // Only include category if it is not null
+    private Category category;
+
+    // Default Constructor
+    public Product() {}
+
+    // Parameterized Constructor
+    public Product(String productName, double productPrice, Category category) {
+        this.productName = productName;
+        this.productPrice = productPrice;
+        this.category = category;
+    }
+
+    // Getters and Setters
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public double getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+}

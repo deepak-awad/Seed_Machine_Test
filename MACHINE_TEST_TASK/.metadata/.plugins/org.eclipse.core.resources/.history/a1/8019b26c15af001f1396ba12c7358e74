@@ -1,0 +1,62 @@
+package com.example.demo.Controller;
+
+import com.example.demo.Dao.Category;
+import com.example.demo.Service.categoryService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("api/categories")
+public class categoryController {
+
+    @Autowired
+    private categoryService categoryService;
+
+    // Get all categories with pagination
+    @GetMapping
+    public ResponseEntity<List<Category>> getAllCategories(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "5") Integer pageSize) {
+
+        Page<Category> categoriesPage = categoryService.getAllCategories(pageNo, pageSize);
+        if (categoriesPage.hasContent()) {
+            return new ResponseEntity<>(categoriesPage.getContent(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
+    // Store the category details
+    @PostMapping
+    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
+        Category savedCategory = categoryService.createCategory(category);
+        return new ResponseEntity<>(savedCategory, HttpStatus.CREATED);
+    }
+
+    // Get category details by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
+        Category category = categoryService.getCategoryById(id);
+        return new ResponseEntity<>(category, HttpStatus.OK);
+    }
+
+    // Delete category details by ID
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategoryById(@PathVariable Long id) {
+        categoryService.deleteCategoryById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // Update category details by ID
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> updateCategoryById(@PathVariable Long id, @RequestBody Category category) {
+        Category updatedCategory = categoryService.updateCategoryById(id, category);
+        return new ResponseEntity<>(updatedCategory, HttpStatus.OK);
+    }
+}

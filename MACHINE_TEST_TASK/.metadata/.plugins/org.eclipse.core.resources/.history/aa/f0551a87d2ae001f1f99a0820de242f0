@@ -1,0 +1,21 @@
+package com.example.demo.Bean;
+
+import jakarta.persistence.Entity;
+
+@Entity
+public class Category {
+	
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Product> products;
+
+	
+	
+	
+
+}

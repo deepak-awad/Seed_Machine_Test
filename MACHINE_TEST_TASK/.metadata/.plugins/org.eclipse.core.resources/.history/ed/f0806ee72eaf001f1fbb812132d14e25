@@ -1,0 +1,69 @@
+package com.example.demo.Service;
+
+import com.example.demo.Dao.Category;
+import com.example.demo.Repository.categoryRepository;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.util.List;
+
+@Service
+public class categoryService {
+
+    @Autowired
+    private categoryRepository categoryRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
+    // Get paginated categories
+    public Page<Category> getAllCategories(int pageNo, int pageSize) {
+        // Custom pagination query for Oracle
+        String sql = "SELECT * FROM (SELECT c1_0.category_id, c1_0.category_name, " +
+                     "ROWNUM rnum FROM category c1_0 " +
+                     "ORDER BY c1_0.category_name) " +
+                     "WHERE rnum > :startRow AND rnum <= :endRow";
+
+        Query query = entityManager.createNativeQuery(sql, Category.class);
+        query.setParameter("startRow", pageNo * pageSize);
+        query.setParameter("endRow", (pageNo + 1) * pageSize);
+
+        // Get the result list
+        List<Category> categories = query.getResultList();
+
+        // Total count query for pagination (to calculate the total pages)
+        String countSql = "SELECT COUNT(*) FROM category";
+        Query countQuery = entityManager.createNativeQuery(countSql);
+        Long total = (Long) countQuery.getSingleResult();
+
+        return new PageImpl<>(categories, PageRequest.of(pageNo, pageSize), total);
+    }
+
+    // Save Details
+    public Category createCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    // Get details by id
+    public Category getCategoryById(Long id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category Not Found"));
+    }
+
+    // Delete details by id
+    public void deleteCategoryById(Long id) {
+        categoryRepository.deleteById(id);
+    }
+
+    // Update details by id
+    public Category updateCategoryById(Long id, Category category) {
+        Category existingCategory = getCategoryById(id);
+        existingCategory.setCategoryName(category.getCategoryName());
+        return categoryRepository.save(existingCategory);
+    }
+}

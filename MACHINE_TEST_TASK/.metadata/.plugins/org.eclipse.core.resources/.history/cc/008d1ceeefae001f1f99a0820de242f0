@@ -1,0 +1,10 @@
+package com.example.demo.Service;
+
+import com.example.demo.Repository.productRepository;
+
+public class productService {
+	
+	@Autowired
+	private productRepository productRepository;
+
+}

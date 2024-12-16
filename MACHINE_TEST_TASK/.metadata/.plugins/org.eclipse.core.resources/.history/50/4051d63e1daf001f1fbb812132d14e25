@@ -1,0 +1,14 @@
+package com.example.demo.Repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+import com.example.demo.Dao.Category;
+
+public interface categoryRepository extends JpaRepository<Category, Long>,PagingAndSortingRepository<Category, Long> {
+	
+	 @Query("SELECT c FROM Category c WHERE c.category_id >= :startId AND c.category_id < :endId")
+	    Page<Category> findCategoriesByPage(@Param("startId") Long startId, @Param("endId") Long endId, Pageable pageable);
+	
+
+}

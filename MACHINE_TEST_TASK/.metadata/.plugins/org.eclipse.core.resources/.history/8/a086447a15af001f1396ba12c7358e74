@@ -1,0 +1,9 @@
+package com.example.demo.Repository;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
+
+import com.example.demo.Dao.Category;
+
+public interface CategoryRepo extends PagingAndSortingRepository<Category, Long> {
+
+}
